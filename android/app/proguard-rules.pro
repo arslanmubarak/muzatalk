@@ -1,0 +1,3 @@
+-keep class com.muztech.muztalk.data.model.** { *; }
+-dontwarn org.webrtc.**
+-keep class org.webrtc.** { *; }

@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.MuzTalk" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/muztalk_secondary</item>
+        <item name="android:navigationBarColor">@color/muztalk_secondary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/muztalk_secondary</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/muztalk_splash_logo</item>
+        <item name="android:windowSplashScreenAnimationDuration">500</item>
+    </style>
+</resources>

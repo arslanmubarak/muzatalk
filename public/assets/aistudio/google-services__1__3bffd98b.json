@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "158755370668",
+    "firebase_url": "https://muztalk-41f2a-default-rtdb.firebaseio.com",
+    "project_id": "muztalk-41f2a",
+    "storage_bucket": "muztalk-41f2a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158755370668:android:c432fe3f998ace8c2ad109",
+        "android_client_info": {
+          "package_name": "com.muztech.muztalk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHRVUtuVDW7rKh9xDKR9JiIYpDwWR5l4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

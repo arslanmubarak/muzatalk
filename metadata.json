@@ -1,0 +1,6 @@
+{
+  "name": "MuzTalk",
+  "description": "MuzTalk — Connect. Chat. Call. Real-time messaging, WebRTC audio and video calling, groups, communities, 24-hour status updates, MySQL 8 backend, and admin dashboard.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,80 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: muztalk-mysql8
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_me_root}
+      MYSQL_DATABASE: muztalk
+      MYSQL_USER: muztalk_app
+      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:-change_me_app}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/prisma/migrations/0001_init/migration.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  coturn:
+    image: coturn/coturn:4.6-alpine
+    container_name: muztalk-coturn
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./infrastructure/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: muztalk-livekit
+    restart: unless-stopped
+    command: --config /etc/livekit.yaml
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    volumes:
+      - ./infrastructure/livekit/livekit.yaml:/etc/livekit.yaml:ro
+
+  app:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile.backend
+    container_name: muztalk-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: mysql://muztalk_app:${MYSQL_APP_PASSWORD:-change_me_app}@mysql:3306/muztalk
+      LIVEKIT_URL: ws://livekit:7880
+      STORAGE_MODE: mobile_encrypted_vault
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads_data:/app/uploads
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: muztalk-nginx
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+volumes:
+  mysql_data:
+  uploads_data:

@@ -1,0 +1,728 @@
+// ============================================================================
+// MuzTalk — MySQL 8.0+ Prisma Schema (STRICTLY MYSQL ONLY)
+// Engine: InnoDB | Charset: utf8mb4 | Collation: utf8mb4_unicode_ci
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+  COMMUNITY_ANNOUNCEMENT
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  VOICE_NOTE
+  DOCUMENT
+  STICKER
+  GIF
+  LOCATION
+  CONTACT
+  SYSTEM
+}
+
+enum ReceiptStatus {
+  SENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum GroupRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum StatusType {
+  TEXT
+  IMAGE
+  VIDEO
+}
+
+enum StatusPrivacyMode {
+  CONTACTS
+  EXCEPT_SELECTED
+  ONLY_SELECTED
+}
+
+enum CallType {
+  AUDIO
+  VIDEO
+  GROUP_AUDIO
+  GROUP_VIDEO
+}
+
+enum CallStatus {
+  RINGING
+  ACTIVE
+  ENDED
+  MISSED
+  REJECTED
+  FAILED
+}
+
+enum ReportStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  DISMISSED
+}
+
+// 1. users
+model User {
+  id            String        @id @default(uuid()) @db.Char(36)
+  phoneNumber   String        @unique @map("phone_number") @db.VarChar(24)
+  countryCode   String        @map("country_code") @db.VarChar(8)
+  email         String?       @unique @db.VarChar(160)
+  username      String?       @unique @db.VarChar(40)
+  passwordHash  String?       @map("password_hash") @db.VarChar(255)
+  status        AccountStatus @default(ACTIVE)
+  isOnline      Boolean       @default(false) @map("is_online")
+  lastSeenAt    DateTime?     @map("last_seen_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  deletedAt     DateTime?     @map("deleted_at")
+
+  profile             UserProfile?
+  devices             UserDevice[]
+  refreshTokens       RefreshToken[]
+  contacts            Contact[]             @relation("UserContacts")
+  contactOf           Contact[]             @relation("ContactTarget")
+  conversationMembers ConversationMember[]
+  sentMessages        Message[]             @relation("SentMessages")
+  messageReceipts     MessageReceipt[]
+  messageReactions    MessageReaction[]
+  mediaFiles          MediaFile[]
+  groupMembers        GroupMember[]
+  statuses            Status[]
+  statusViews         StatusView[]
+  statusReactions     StatusReaction[]
+  initiatedCalls      Call[]                @relation("CallInitiator")
+  callParticipants    CallParticipant[]
+  blockedUsers        BlockedUser[]         @relation("Blocker")
+  blockedBy           BlockedUser[]         @relation("Blocked")
+  reportsSubmitted    Report[]              @relation("Reporter")
+  reportsReceived     Report[]              @relation("ReportedUser")
+  notifications       Notification[]
+  notificationDevices NotificationDevice[]
+  settings            UserSettings?
+  encryptionKeys      EncryptionKey[]
+
+  @@index([phoneNumber])
+  @@index([username])
+  @@index([status])
+  @@map("users")
+}
+
+// 2. user_profiles
+model UserProfile {
+  id            String   @id @default(uuid()) @db.Char(36)
+  userId        String   @unique @map("user_id") @db.Char(36)
+  displayName   String   @map("display_name") @db.VarChar(100)
+  about         String?  @db.VarChar(255)
+  avatarUrl     String?  @map("avatar_url") @db.VarChar(512)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// 3. user_devices
+model UserDevice {
+  id           String   @id @default(uuid()) @db.Char(36)
+  userId       String   @map("user_id") @db.Char(36)
+  deviceName   String   @map("device_name") @db.VarChar(120)
+  platform     String   @db.VarChar(32)
+  deviceToken  String   @unique @map("device_token") @db.VarChar(128)
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+  @@map("user_devices")
+}
+
+// 4. refresh_tokens
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  deviceId  String?   @map("device_id") @db.Char(36)
+  tokenHash String    @unique @map("token_hash") @db.VarChar(255)
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device UserDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+// 5. contacts
+model Contact {
+  id            String   @id @default(uuid()) @db.Char(36)
+  ownerId       String   @map("owner_id") @db.Char(36)
+  contactUserId String   @map("contact_user_id") @db.Char(36)
+  aliasName     String?  @map("alias_name") @db.VarChar(100)
+  isFavorite    Boolean  @default(false) @map("is_favorite")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  owner       User @relation("UserContacts", fields: [ownerId], references: [id], onDelete: Cascade)
+  contactUser User @relation("ContactTarget", fields: [contactUserId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, contactUserId])
+  @@index([ownerId])
+  @@map("contacts")
+}
+
+// 6. conversations
+model Conversation {
+  id            String           @id @default(uuid()) @db.Char(36)
+  type          ConversationType @default(DIRECT)
+  lastMessageId String?          @map("last_message_id") @db.Char(36)
+  lastMessageAt DateTime?        @map("last_message_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+  deletedAt     DateTime?        @map("deleted_at")
+
+  members  ConversationMember[]
+  messages Message[]
+  group    Group?
+  calls    Call[]
+
+  @@index([lastMessageAt])
+  @@map("conversations")
+}
+
+// 7. conversation_members
+model ConversationMember {
+  id             String    @id @default(uuid()) @db.Char(36)
+  conversationId String    @map("conversation_id") @db.Char(36)
+  userId         String    @map("user_id") @db.Char(36)
+  isPinned       Boolean   @default(false) @map("is_pinned")
+  isArchived     Boolean   @default(false) @map("is_archived")
+  isMuted        Boolean   @default(false) @map("is_muted")
+  mutedUntil     DateTime? @map("muted_until")
+  unreadCount    Int       @default(0) @map("unread_count")
+  lastReadAt     DateTime? @map("last_read_at")
+  joinedAt       DateTime  @default(now()) @map("joined_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([userId, isArchived, isPinned])
+  @@map("conversation_members")
+}
+
+// 8. messages
+model Message {
+  id              String      @id @default(uuid()) @db.Char(36)
+  clientMessageId String?     @unique @map("client_message_id") @db.VarChar(64)
+  conversationId  String      @map("conversation_id") @db.Char(36)
+  senderId        String      @map("sender_id") @db.Char(36)
+  type            MessageType @default(TEXT)
+  ciphertext      String?     @db.Text
+  previewText     String?     @map("preview_text") @db.VarChar(500)
+  replyToId       String?     @map("reply_to_id") @db.Char(36)
+  forwardedFromId String?     @map("forwarded_from_id") @db.Char(36)
+  isStarred       Boolean     @default(false) @map("is_starred")
+  isPinned        Boolean     @default(false) @map("is_pinned")
+  isEdited        Boolean     @default(false) @map("is_edited")
+  editedAt        DateTime?   @map("edited_at")
+  deletedForAllAt DateTime?   @map("deleted_for_all_at")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  conversation Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User                @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo      Message?            @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies      Message[]           @relation("MessageReplies")
+  receipts     MessageReceipt[]
+  reactions    MessageReaction[]
+  attachments  MessageAttachment[]
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
+// 9. message_receipts
+model MessageReceipt {
+  id          String        @id @default(uuid()) @db.Char(36)
+  messageId   String        @map("message_id") @db.Char(36)
+  userId      String        @map("user_id") @db.Char(36)
+  status      ReceiptStatus @default(SENT)
+  deliveredAt DateTime?     @map("delivered_at")
+  readAt      DateTime?     @map("read_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@index([userId, status])
+  @@map("message_receipts")
+}
+
+// 10. message_reactions
+model MessageReaction {
+  id        String   @id @default(uuid()) @db.Char(36)
+  messageId String   @map("message_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  emoji     String   @db.VarChar(16)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId])
+  @@map("message_reactions")
+}
+
+// 11. message_attachments
+model MessageAttachment {
+  id          String   @id @default(uuid()) @db.Char(36)
+  messageId   String   @map("message_id") @db.Char(36)
+  mediaFileId String   @map("media_file_id") @db.Char(36)
+  caption     String?  @db.VarChar(500)
+  durationMs  Int?     @map("duration_ms")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  message   Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  mediaFile MediaFile @relation(fields: [mediaFileId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("message_attachments")
+}
+
+// 12. media_files
+model MediaFile {
+  id           String    @id @default(uuid()) @db.Char(36)
+  uploaderId   String    @map("uploader_id") @db.Char(36)
+  storageKey   String    @unique @map("storage_key") @db.VarChar(255)
+  originalName String    @map("original_name") @db.VarChar(255)
+  mimeType     String    @map("mime_type") @db.VarChar(120)
+  sizeBytes    BigInt    @map("size_bytes")
+  thumbnailUrl String?   @map("thumbnail_url") @db.VarChar(512)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  uploader    User                @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  attachments MessageAttachment[]
+
+  @@index([uploaderId])
+  @@map("media_files")
+}
+
+// 13. groups
+model Group {
+  id             String    @id @default(uuid()) @db.Char(36)
+  conversationId String    @unique @map("conversation_id") @db.Char(36)
+  name           String    @db.VarChar(120)
+  description    String?   @db.VarChar(500)
+  avatarUrl      String?   @map("avatar_url") @db.VarChar(512)
+  onlyAdminsPost Boolean   @default(false) @map("only_admins_post")
+  createdById    String    @map("created_by_id") @db.Char(36)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  conversation Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  members      GroupMember[]
+  invites      GroupInvite[]
+  communities  CommunityGroup[]
+
+  @@map("groups")
+}
+
+// 14. group_members
+model GroupMember {
+  id       String    @id @default(uuid()) @db.Char(36)
+  groupId  String    @map("group_id") @db.Char(36)
+  userId   String    @map("user_id") @db.Char(36)
+  role     GroupRole @default(MEMBER)
+  joinedAt DateTime  @default(now()) @map("joined_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([userId])
+  @@map("group_members")
+}
+
+// 15. group_invites
+model GroupInvite {
+  id          String    @id @default(uuid()) @db.Char(36)
+  groupId     String    @map("group_id") @db.Char(36)
+  inviteCode  String    @unique @map("invite_code") @db.VarChar(32)
+  createdById String    @map("created_by_id") @db.Char(36)
+  expiresAt   DateTime? @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@map("group_invites")
+}
+
+// 16. communities
+model Community {
+  id          String    @id @default(uuid()) @db.Char(36)
+  name        String    @db.VarChar(120)
+  description String?   @db.VarChar(500)
+  avatarUrl   String?   @map("avatar_url") @db.VarChar(512)
+  inviteCode  String    @unique @map("invite_code") @db.VarChar(32)
+  createdById String    @map("created_by_id") @db.Char(36)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  groups CommunityGroup[]
+
+  @@map("communities")
+}
+
+// 17. community_groups
+model CommunityGroup {
+  id             String   @id @default(uuid()) @db.Char(36)
+  communityId    String   @map("community_id") @db.Char(36)
+  groupId        String   @map("group_id") @db.Char(36)
+  isAnnouncement Boolean  @default(false) @map("is_announcement")
+  addedAt        DateTime @default(now()) @map("added_at")
+
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, groupId])
+  @@map("community_groups")
+}
+
+// 18. statuses
+model Status {
+  id          String            @id @default(uuid()) @db.Char(36)
+  userId      String            @map("user_id") @db.Char(36)
+  type        StatusType        @default(TEXT)
+  contentText String?           @map("content_text") @db.VarChar(700)
+  mediaUrl    String?           @map("media_url") @db.VarChar(512)
+  bgColor     String?           @map("bg_color") @db.VarChar(24)
+  caption     String?           @db.VarChar(300)
+  privacyMode StatusPrivacyMode @default(CONTACTS) @map("privacy_mode")
+  expiresAt   DateTime          @map("expires_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  deletedAt   DateTime?         @map("deleted_at")
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  views     StatusView[]
+  reactions StatusReaction[]
+
+  @@index([userId, expiresAt])
+  @@map("statuses")
+}
+
+// 19. status_views
+model StatusView {
+  id       String   @id @default(uuid()) @db.Char(36)
+  statusId String   @map("status_id") @db.Char(36)
+  viewerId String   @map("viewer_id") @db.Char(36)
+  viewedAt DateTime @default(now()) @map("viewed_at")
+
+  status Status @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  viewer User   @relation(fields: [viewerId], references: [id], onDelete: Cascade)
+
+  @@unique([statusId, viewerId])
+  @@map("status_views")
+}
+
+// 20. status_reactions
+model StatusReaction {
+  id        String   @id @default(uuid()) @db.Char(36)
+  statusId  String   @map("status_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  emoji     String   @db.VarChar(16)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  status Status @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([statusId, userId])
+  @@map("status_reactions")
+}
+
+// 21. calls
+model Call {
+  id             String     @id @default(uuid()) @db.Char(36)
+  conversationId String?    @map("conversation_id") @db.Char(36)
+  initiatorId    String     @map("initiator_id") @db.Char(36)
+  type           CallType   @default(AUDIO)
+  status         CallStatus @default(RINGING)
+  livekitRoom    String?    @map("livekit_room") @db.VarChar(128)
+  startedAt      DateTime   @default(now()) @map("started_at")
+  answeredAt     DateTime?  @map("answered_at")
+  endedAt        DateTime?  @map("ended_at")
+  durationSec    Int        @default(0) @map("duration_sec")
+
+  conversation Conversation?     @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  initiator    User              @relation("CallInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  participants CallParticipant[]
+  events       CallEvent[]
+
+  @@index([initiatorId, startedAt])
+  @@map("calls")
+}
+
+// 22. call_participants
+model CallParticipant {
+  id        String    @id @default(uuid()) @db.Char(36)
+  callId    String    @map("call_id") @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  joinedAt  DateTime? @map("joined_at")
+  leftAt    DateTime? @map("left_at")
+  isMuted   Boolean   @default(false) @map("is_muted")
+  isVideoOn Boolean   @default(false) @map("is_video_on")
+
+  call Call @relation(fields: [callId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([callId, userId])
+  @@map("call_participants")
+}
+
+// 23. call_events
+model CallEvent {
+  id        String   @id @default(uuid()) @db.Char(36)
+  callId    String   @map("call_id") @db.Char(36)
+  actorId   String   @map("actor_id") @db.Char(36)
+  eventType String   @map("event_type") @db.VarChar(48)
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  call Call @relation(fields: [callId], references: [id], onDelete: Cascade)
+
+  @@index([callId, createdAt])
+  @@map("call_events")
+}
+
+// 24. stickers
+model Sticker {
+  id         String   @id @default(uuid()) @db.Char(36)
+  packId     String   @map("pack_id") @db.Char(36)
+  label      String   @db.VarChar(64)
+  emojiTag   String   @map("emoji_tag") @db.VarChar(16)
+  imageUrl   String   @map("image_url") @db.VarChar(512)
+  isAnimated Boolean  @default(false) @map("is_animated")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  pack StickerPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@index([packId])
+  @@map("stickers")
+}
+
+// 25. sticker_packs
+model StickerPack {
+  id         String    @id @default(uuid()) @db.Char(36)
+  title      String    @db.VarChar(100)
+  author     String    @db.VarChar(80)
+  isOfficial Boolean   @default(true) @map("is_official")
+  coverUrl   String?   @map("cover_url") @db.VarChar(512)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  stickers   Sticker[]
+
+  @@map("sticker_packs")
+}
+
+// 26. blocked_users
+model BlockedUser {
+  id        String   @id @default(uuid()) @db.Char(36)
+  blockerId String   @map("blocker_id") @db.Char(36)
+  blockedId String   @map("blocked_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@map("blocked_users")
+}
+
+// 27. reports
+model Report {
+  id             String       @id @default(uuid()) @db.Char(36)
+  reporterId     String       @map("reporter_id") @db.Char(36)
+  reportedUserId String       @map("reported_user_id") @db.Char(36)
+  reason         String       @db.VarChar(120)
+  details        String?      @db.VarChar(1000)
+  status         ReportStatus @default(OPEN)
+  resolvedById   String?      @map("resolved_by_id") @db.Char(36)
+  resolvedAt     DateTime?    @map("resolved_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  reporter     User @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser User @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@map("reports")
+}
+
+// 28. notifications
+model Notification {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    String    @map("user_id") @db.Char(36)
+  category  String    @db.VarChar(48)
+  title     String    @db.VarChar(160)
+  body      String    @db.VarChar(500)
+  deepLink  String?   @map("deep_link") @db.VarChar(255)
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+// 29. notification_devices
+model NotificationDevice {
+  id        String   @id @default(uuid()) @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  fcmToken  String   @unique @map("fcm_token") @db.VarChar(512)
+  platform  String   @db.VarChar(24)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification_devices")
+}
+
+// 30. user_settings
+model UserSettings {
+  id                  String   @id @default(uuid()) @db.Char(36)
+  userId              String   @unique @map("user_id") @db.Char(36)
+  theme               String   @default("system") @db.VarChar(16)
+  language            String   @default("en") @db.VarChar(16)
+  lastSeenVisibility  String   @default("everyone") @map("last_seen_visibility") @db.VarChar(24)
+  avatarVisibility    String   @default("everyone") @map("avatar_visibility") @db.VarChar(24)
+  aboutVisibility     String   @default("everyone") @map("about_visibility") @db.VarChar(24)
+  readReceipts        Boolean  @default(true) @map("read_receipts")
+  messageAlerts       Boolean  @default(true) @map("message_alerts")
+  groupAlerts         Boolean  @default(true) @map("group_alerts")
+  callAlerts          Boolean  @default(true) @map("call_alerts")
+  autoDownloadMedia   Boolean  @default(true) @map("auto_download_media")
+  chatWallpaper       String?  @map("chat_wallpaper") @db.VarChar(64)
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+// 31. encryption_keys (Signal Protocol / ECDH Public Identity & Prekey Bundles)
+model EncryptionKey {
+  id               String   @id @default(uuid()) @db.Char(36)
+  userId           String   @map("user_id") @db.Char(36)
+  deviceId         String   @map("device_id") @db.VarChar(64)
+  identityKeyPub   String   @map("identity_key_pub") @db.Text
+  signedPreKeyPub  String   @map("signed_pre_key_pub") @db.Text
+  signedPreKeySig  String   @map("signed_pre_key_sig") @db.Text
+  fingerprint      String   @db.VarChar(128)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@map("encryption_keys")
+}
+
+// 32. admin_users
+model AdminUser {
+  id           String     @id @default(uuid()) @db.Char(36)
+  email        String     @unique @db.VarChar(160)
+  displayName  String     @map("display_name") @db.VarChar(100)
+  passwordHash String     @map("password_hash") @db.VarChar(255)
+  roleId       String     @map("role_id") @db.Char(36)
+  isActive     Boolean    @default(true) @map("is_active")
+  lastLoginAt  DateTime?  @map("last_login_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  role      AdminRole  @relation(fields: [roleId], references: [id])
+  auditLogs AuditLog[]
+
+  @@map("admin_users")
+}
+
+// 33. admin_roles
+model AdminRole {
+  id          String      @id @default(uuid()) @db.Char(36)
+  name        String      @unique @db.VarChar(48)
+  permissions Json
+  createdAt   DateTime    @default(now()) @map("created_at")
+  admins      AdminUser[]
+
+  @@map("admin_roles")
+}
+
+// 34. audit_logs
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Char(36)
+  adminUserId String   @map("admin_user_id") @db.Char(36)
+  action      String   @db.VarChar(100)
+  targetType  String   @map("target_type") @db.VarChar(48)
+  targetId    String?  @map("target_id") @db.VarChar(64)
+  details     Json?
+  ipAddress   String?  @map("ip_address") @db.VarChar(64)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId, createdAt])
+  @@map("audit_logs")
+}
+
+// 35. system_configs
+model SystemConfig {
+  id          String   @id @default(uuid()) @db.Char(36)
+  configKey   String   @unique @map("config_key") @db.VarChar(64)
+  configValue Json     @map("config_value")
+  updatedBy   String   @map("updated_by") @db.VarChar(160)
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_configs")
+}

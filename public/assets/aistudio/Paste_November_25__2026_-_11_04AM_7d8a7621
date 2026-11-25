@@ -1,0 +1,1171 @@
+بالکل! اب میں آپ کو MuzTalk کا مکمل Updated Master Prompt دے رہا ہوں، جس میں Database لازمی طور پر MySQL 8 ہوگا، PostgreSQL نہیں۔
+
+اس میں WhatsApp جیسا مکمل Chat System، Audio/Video Calling، Group Calls، Status، Stickers، Backend، Admin Panel اور Android APK سب شامل ہیں۔
+
+MuzTalk
+
+Connect. Chat. Call.
+
+Updated
+
+Final technology requirements
+
+* Android: React Native + TypeScript
+
+* Backend: Node.js + Express.js
+
+* Database: MySQL 8
+
+* ORM: Prisma
+
+* Real-time: Socket.IO
+
+* Calls: WebRTC + LiveKit
+
+* Notifications: Firebase
+
+* Admin: React + TypeScript
+
+### Complete MuzTalk Master Prompt
+
+نیچے والا پورا پرامپٹ کاپی کرکے Google AI Studio کے Build Mode میں پیسٹ کریں۔
+
+# PROJECT: MuzTalk
+# COMPLETE WHATSAPP-STYLE MESSAGING AND CALLING APPLICATION
+## Full Android App + Backend + MySQL Database + Admin Panel
+
+Act as a world-class team of senior software engineers, Android developers, backend architects, database engineers, UI/UX designers, DevOps engineers, cybersecurity specialists, and real-time communication experts.
+
+Your mission is to build a complete, professional, scalable, secure, production-ready messaging and communication application called MUZTALK.
+
+MuzTalk is a modern messaging platform inspired by the functionality of WhatsApp, Telegram, and premium social communication applications.
+
+The application must have real functionality, not just UI screens or a frontend prototype.
+
+Build a complete Android application with a real backend, MySQL database, real-time messaging, voice calls, video calls, group chats, status updates, stickers, push notifications, media sharing, and a separate web-based admin dashboard.
+
+IMPORTANT DATABASE RULE:
+MYSQL IS THE ONLY PRIMARY DATABASE.
+Use MySQL 8.0 or newer.
+Do not use PostgreSQL.
+Do not use MongoDB.
+Do not use SQLite as the production database.
+
+==================================================
+1. OFFICIAL BRAND IDENTITY
+==================================================
+
+Application Name: MuzTalk
+
+Tagline: Connect. Chat. Call.
+
+Android Package Name: com.muztech.muztalk
+
+Brand Colors:
+Primary: #20BFA5
+Secondary: #101C35
+Accent: #48D6B8
+Light Background: #F7FAFC
+Dark Background: #101820
+White: #FFFFFF
+
+Create an original professional brand identity.
+
+Required branding:
+- MuzTalk logo.
+- Android application icon.
+- Splash screen.
+- Onboarding screens.
+- Login and registration branding.
+- Notification icon.
+- Admin dashboard logo.
+- Loading animations.
+
+Design should look like a premium international messaging application.
+
+Do not use WhatsApp logos, trademarks, or copyrighted assets.
+
+==================================================
+2. TECHNOLOGY STACK
+==================================================
+
+ANDROID APPLICATION:
+- React Native.
+- Expo development builds.
+- TypeScript.
+- React Navigation.
+- Zustand or Redux Toolkit.
+- Socket.IO Client.
+- WebRTC.
+- Firebase Cloud Messaging.
+- Secure local storage.
+- Native Android integrations when necessary.
+
+BACKEND:
+- Node.js.
+- Express.js.
+- TypeScript.
+- REST API.
+- Socket.IO.
+- Prisma ORM.
+- MySQL 8.
+- Redis for caching and temporary real-time data.
+- JWT authentication.
+- Firebase Admin SDK.
+
+DATABASE:
+- MySQL 8.0 or newer.
+- InnoDB.
+- utf8mb4.
+- Prisma ORM.
+- Database migrations.
+- Proper indexes and relationships.
+
+CALLING:
+- WebRTC.
+- STUN.
+- TURN using Coturn.
+- LiveKit SFU for scalable group calls.
+
+MEDIA STORAGE:
+- S3-compatible storage.
+- Secure file uploads.
+- Image compression.
+- Video thumbnails.
+- Signed media URLs.
+
+ADMIN PANEL:
+- React.
+- TypeScript.
+- Tailwind CSS.
+- Responsive dashboard.
+
+INFRASTRUCTURE:
+- Docker.
+- Docker Compose.
+- Nginx.
+- HTTPS.
+- Production environment configuration.
+
+Use stable, compatible package versions and document all dependencies.
+
+==================================================
+3. APPLICATION NAVIGATION
+==================================================
+
+Create five main bottom navigation tabs:
+
+1. Chats
+2. Updates
+3. Communities
+4. Calls
+5. Settings
+
+Requirements:
+- Premium navigation design.
+- Smooth animations.
+- Unread count badges.
+- Modern icons.
+- Light theme.
+- Dark theme.
+- Responsive layouts.
+
+==================================================
+4. AUTHENTICATION SYSTEM
+==================================================
+
+Implement complete user authentication.
+
+Features:
+- Phone number registration.
+- Country code selection.
+- OTP verification.
+- Phone number login.
+- JWT access tokens.
+- Refresh token rotation.
+- Secure logout.
+- Account recovery.
+- Profile creation.
+- Profile picture upload.
+- Username.
+- Display name.
+- About/bio.
+- Device management.
+- Multiple linked devices.
+- Session management.
+- Account deletion.
+
+Integrate a real SMS OTP provider.
+
+Never hardcode production OTP codes.
+
+Provide development testing mode separately.
+
+==================================================
+5. USER PROFILE
+==================================================
+
+Every user must have:
+
+- Unique ID.
+- Username.
+- Display name.
+- Phone number.
+- Profile picture.
+- About information.
+- Online/offline status.
+- Last seen.
+- Account creation date.
+- Privacy preferences.
+
+Profile actions:
+- View profile.
+- Send message.
+- Audio call.
+- Video call.
+- Add contact.
+- Block user.
+- Report user.
+
+Protect private user information.
+
+==================================================
+6. CHAT LIST
+==================================================
+
+Create a WhatsApp-style chat list.
+
+Each chat item must show:
+- Profile picture.
+- Contact or group name.
+- Last message.
+- Message time.
+- Unread count.
+- Online indicator.
+- Pinned indicator.
+- Muted indicator.
+- Message delivery status.
+
+Features:
+- Search chats.
+- Filter unread chats.
+- Pin chats.
+- Archive chats.
+- Mute chats.
+- Mark unread.
+- Delete chat.
+- Create new chat.
+- Start group chat.
+
+Load all chat data from MySQL through authenticated APIs.
+
+==================================================
+7. ONE-TO-ONE REAL-TIME MESSAGING
+==================================================
+
+Implement complete private messaging.
+
+Message types:
+- Text.
+- Images.
+- Videos.
+- Documents.
+- PDFs.
+- Audio files.
+- Voice notes.
+- Stickers.
+- GIFs.
+- Location.
+- Contact sharing.
+
+Features:
+- Send messages.
+- Receive messages instantly.
+- Reply.
+- Forward.
+- Edit.
+- Delete for me.
+- Delete for everyone.
+- Copy.
+- Star.
+- Pin.
+- React with emojis.
+- Search messages.
+- Share media.
+- Download attachments.
+- Message timestamps.
+- Typing indicator.
+- Online status.
+- Last seen.
+
+Message status:
+- Sending.
+- Sent.
+- Delivered.
+- Read.
+- Failed.
+
+Use reliable message IDs, delivery acknowledgements, retries, and idempotency.
+
+Implement offline message queues and automatic synchronization after reconnection.
+
+==================================================
+8. CHAT SCREEN DESIGN
+==================================================
+
+Header:
+- Back button.
+- Contact avatar.
+- Contact name.
+- Online/last seen status.
+- Audio call button.
+- Video call button.
+- More options.
+
+Chat body:
+- Incoming bubbles.
+- Outgoing bubbles.
+- Message timestamps.
+- Delivery ticks.
+- Reply previews.
+- Reactions.
+- Date separators.
+- Unread message separator.
+
+Message input:
+- Emoji button.
+- Text input.
+- Attachment button.
+- Camera button.
+- Voice recording.
+- Send button.
+
+Implement long-press message actions.
+
+==================================================
+9. VOICE NOTES
+==================================================
+
+Features:
+- Record voice notes.
+- Play and pause.
+- Resume playback.
+- Playback speed.
+- Audio waveform.
+- Recording duration.
+- Cancel recording.
+- Upload.
+- Download.
+- Playback progress.
+
+Use Android microphone permissions correctly.
+
+==================================================
+10. ONE-TO-ONE AUDIO CALLING
+==================================================
+
+Build real audio calls using WebRTC.
+
+Features:
+- Start call.
+- Incoming call screen.
+- Outgoing call screen.
+- Accept.
+- Reject.
+- End call.
+- Mute microphone.
+- Speaker on/off.
+- Call duration.
+- Missed call.
+- Call history.
+- Busy status.
+- Reconnection.
+- Audio device management.
+
+Use Socket.IO for signaling.
+
+Use STUN/TURN servers for connectivity.
+
+Implement Android-compatible background incoming call notifications and native call integration.
+
+Do not simulate calls.
+
+==================================================
+11. ONE-TO-ONE VIDEO CALLING
+==================================================
+
+Implement actual WebRTC video calls.
+
+Features:
+- Front camera.
+- Back camera.
+- Camera switching.
+- Camera on/off.
+- Microphone on/off.
+- Speaker controls.
+- Full-screen video.
+- Picture-in-picture where supported.
+- Incoming video call screen.
+- Call timer.
+- Connection quality.
+- Reconnection.
+- End call.
+
+Test actual connections between two different Android devices.
+
+==================================================
+12. GROUP CHAT
+==================================================
+
+Features:
+- Create groups.
+- Group name.
+- Group description.
+- Group profile picture.
+- Add participants.
+- Remove participants.
+- Multiple administrators.
+- Promote/demote admins.
+- Member permissions.
+- Group invitation links.
+- Join group.
+- Leave group.
+- Group media sharing.
+- Member mentions.
+- Message replies.
+- Group search.
+- Group notifications.
+
+==================================================
+13. GROUP AUDIO AND VIDEO CALLS
+==================================================
+
+Use LiveKit or mediasoup SFU architecture.
+
+Features:
+- Create group call.
+- Invite members.
+- Multiple participants.
+- Audio controls.
+- Video controls.
+- Active speaker.
+- Participant list.
+- Mute/unmute.
+- Camera controls.
+- Join/leave notifications.
+- Reconnection.
+- Group call notifications.
+
+Do not use peer-to-peer mesh as the architecture for large group calls.
+
+==================================================
+14. STATUS / UPDATES
+==================================================
+
+Build a 24-hour status feature.
+
+Features:
+- Image status.
+- Video status.
+- Text status.
+- Captions.
+- Emojis.
+- Text and drawing overlays.
+- Full-screen status viewer.
+- View counter.
+- Viewer list.
+- Reactions.
+- Status replies.
+- Delete status.
+- Mute status.
+- Privacy settings.
+- Hide status from selected contacts.
+- Share with selected contacts.
+
+Automatically expire statuses after 24 hours.
+
+==================================================
+15. STICKERS, EMOJIS AND GIFS
+==================================================
+
+Implement:
+- Emoji keyboard.
+- Sticker picker.
+- Animated stickers.
+- GIF search.
+- Sticker packs.
+- Download sticker packs.
+- Favorite stickers.
+- Recently used stickers.
+- Custom sticker uploads.
+- Sticker sharing.
+
+Use legitimate GIF providers or user-uploaded content.
+
+==================================================
+16. CONTACT MANAGEMENT
+==================================================
+
+Features:
+- Contact permissions.
+- Contact synchronization.
+- Search by username.
+- Search by phone number.
+- Add contacts.
+- Favorite contacts.
+- Block contacts.
+- Report contacts.
+- Contact profiles.
+- Shared media.
+- Mutual groups.
+
+Do not upload contacts without explicit permission.
+
+==================================================
+17. COMMUNITIES
+==================================================
+
+Features:
+- Create community.
+- Community name.
+- Community icon.
+- Description.
+- Add groups.
+- Community administrators.
+- Member management.
+- Announcement groups.
+- Community notifications.
+- Invite links.
+- Join/leave community.
+
+==================================================
+18. PRIVACY AND SECURITY
+==================================================
+
+Implement:
+- HTTPS.
+- JWT authentication.
+- Refresh token rotation.
+- Secure local storage.
+- Rate limiting.
+- OTP expiration.
+- Input validation.
+- SQL injection protection.
+- XSS protection.
+- CSRF protection where applicable.
+- Secure media permissions.
+- Device/session management.
+- Block/report functionality.
+
+END-TO-END ENCRYPTION:
+
+Use an established, audited Signal Protocol implementation.
+
+Implement:
+- Identity keys.
+- Prekeys.
+- Session establishment.
+- Message encryption.
+- Message decryption.
+- Device verification.
+- Key rotation.
+- Secure multi-device support.
+
+Never invent custom cryptography.
+
+The server must not be able to read encrypted private message content.
+
+Document the security implications of backups, groups, and linked devices.
+
+==================================================
+19. PUSH NOTIFICATIONS
+==================================================
+
+Integrate Firebase Cloud Messaging.
+
+Notifications:
+- New messages.
+- Incoming audio calls.
+- Incoming video calls.
+- Missed calls.
+- Group messages.
+- Group invitations.
+- Status updates.
+- Community activity.
+
+Implement:
+- Android notification channels.
+- Runtime notification permissions.
+- Deep links.
+- Background notifications.
+- Device token registration.
+- Device token updates.
+- Token removal after logout.
+- Private notification previews.
+
+==================================================
+20. MEDIA SHARING
+==================================================
+
+Support:
+- Image uploads.
+- Video uploads.
+- Audio uploads.
+- Voice notes.
+- PDF files.
+- Documents.
+- File previews.
+- Video thumbnails.
+- Upload progress.
+- Download progress.
+- Secure downloads.
+- File size limits.
+- File validation.
+
+Use signed URLs or equivalent secure media access.
+
+==================================================
+21. SETTINGS
+==================================================
+
+ACCOUNT:
+- Phone number.
+- Account recovery.
+- Delete account.
+
+PRIVACY:
+- Last seen.
+- Online visibility.
+- Profile picture visibility.
+- About visibility.
+- Read receipts.
+- Blocked contacts.
+- Status privacy.
+
+CHATS:
+- Wallpaper.
+- Backup.
+- Media auto-download.
+- Archive settings.
+
+NOTIFICATIONS:
+- Message notifications.
+- Group notifications.
+- Call notifications.
+- Sound and vibration.
+
+APPEARANCE:
+- Light mode.
+- Dark mode.
+- System default.
+
+OTHER:
+- Storage management.
+- Linked devices.
+- Language.
+- Help and support.
+- About MuzTalk.
+
+==================================================
+22. MYSQL DATABASE — STRICT REQUIREMENT
+==================================================
+
+Use MySQL 8.0 or newer as the only primary production database.
+
+Prisma ORM must use the MySQL provider.
+
+DATABASE CONFIGURATION:
+
+DATABASE_URL="mysql://USERNAME:PASSWORD@HOST:3306/muztalk"
+
+Prisma datasource configuration:
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+Use InnoDB storage engine.
+
+Use utf8mb4 character set.
+
+Use utf8mb4_unicode_ci collation.
+
+Create normalized MySQL database models for:
+
+1. users
+2. user_profiles
+3. user_devices
+4. refresh_tokens
+5. contacts
+6. conversations
+7. conversation_members
+8. messages
+9. message_receipts
+10. message_reactions
+11. message_attachments
+12. media_files
+13. groups
+14. group_members
+15. group_invites
+16. communities
+17. community_groups
+18. statuses
+19. status_views
+20. status_reactions
+21. calls
+22. call_participants
+23. call_events
+24. stickers
+25. sticker_packs
+26. blocked_users
+27. reports
+28. notifications
+29. notification_devices
+30. user_settings
+31. encryption_keys
+32. admin_users
+33. admin_roles
+34. audit_logs
+
+DATABASE REQUIREMENTS:
+
+- Proper primary keys.
+- Foreign keys.
+- Unique constraints.
+- Appropriate indexes.
+- created_at.
+- updated_at.
+- deleted_at where required.
+- Database transactions.
+- Efficient pagination.
+- Secure prepared queries through Prisma.
+- Database migrations.
+- Seed scripts.
+- Backup and restore support.
+
+Use appropriate MySQL column types, indexes, and relationships.
+
+Do not store large media files directly in MySQL. Store media in object storage and keep their metadata and secure references in MySQL.
+
+Use Redis only for caching, temporary presence, and transient real-time data. Permanent application data must be stored in MySQL.
+
+Do not silently switch to another database.
+
+==================================================
+23. BACKEND REST API
+==================================================
+
+AUTH:
+POST /api/auth/register
+POST /api/auth/send-otp
+POST /api/auth/verify-otp
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+
+USERS:
+GET /api/users/me
+PUT /api/users/me
+GET /api/users/search
+GET /api/users/:id
+POST /api/users/:id/block
+DELETE /api/users/:id/block
+
+CHATS:
+GET /api/chats
+POST /api/chats
+GET /api/chats/:id
+GET /api/chats/:id/messages
+POST /api/messages
+PUT /api/messages/:id
+DELETE /api/messages/:id
+
+GROUPS:
+POST /api/groups
+GET /api/groups
+GET /api/groups/:id
+PUT /api/groups/:id
+POST /api/groups/:id/members
+DELETE /api/groups/:id/members/:userId
+
+CALLS:
+POST /api/calls
+POST /api/calls/:id/accept
+POST /api/calls/:id/reject
+POST /api/calls/:id/end
+GET /api/calls/history
+
+STATUSES:
+POST /api/status
+GET /api/status
+GET /api/status/:id
+DELETE /api/status/:id
+
+MEDIA:
+POST /api/media/upload
+GET /api/media/:id
+DELETE /api/media/:id
+
+NOTIFICATIONS:
+GET /api/notifications
+POST /api/devices/register
+DELETE /api/devices/:id
+
+Also implement APIs for:
+- Contacts.
+- Stickers.
+- Communities.
+- Privacy.
+- Reports.
+- Administration.
+- User settings.
+
+All APIs must have validation, authentication, authorization, and error handling.
+
+==================================================
+24. SOCKET.IO EVENTS
+==================================================
+
+MESSAGING:
+message:send
+message:new
+message:delivered
+message:read
+message:edit
+message:delete
+message:reaction
+
+PRESENCE:
+user:online
+user:offline
+user:typing
+user:stop_typing
+user:last_seen
+
+CALLING:
+call:incoming
+call:accept
+call:reject
+call:end
+call:offer
+call:answer
+call:ice_candidate
+
+GROUPS:
+group:created
+group:updated
+group:member_added
+group:member_removed
+
+Implement authenticated sockets, room permissions, event validation, acknowledgements, retries, and reconnection.
+
+==================================================
+25. ADMIN DASHBOARD
+==================================================
+
+Build a separate web-based admin dashboard.
+
+Dashboard overview:
+- Total users.
+- Active users.
+- New registrations.
+- Daily active users.
+- Total groups.
+- Total messages.
+- Total calls.
+- Storage usage.
+- Backend status.
+- Database status.
+
+USER MANAGEMENT:
+- View users.
+- Search users.
+- User details.
+- Activate accounts.
+- Suspend accounts.
+- Manage complaints.
+
+SYSTEM MANAGEMENT:
+- Server health.
+- API status.
+- MySQL status.
+- Redis status.
+- Storage statistics.
+- Notification service status.
+- Calling infrastructure status.
+- Error logs.
+
+ADMIN FEATURES:
+- Admin login.
+- Role-based access control.
+- Multiple administrators.
+- Audit logs.
+- Application configuration.
+
+Never expose decrypted private messages to administrators.
+
+==================================================
+26. PERFORMANCE AND SCALABILITY
+==================================================
+
+Implement:
+- MySQL indexing.
+- Redis caching.
+- Pagination.
+- Lazy loading.
+- Background jobs.
+- Message synchronization.
+- Image compression.
+- Video thumbnails.
+- Queue processing.
+- Rate limiting.
+- Socket connection management.
+- Database connection pooling.
+- Error monitoring.
+- Logging.
+
+Design for scalability and measure actual performance through load testing.
+
+==================================================
+27. PROJECT FILE STRUCTURE
+==================================================
+
+Create:
+
+muztalk/
+    mobile/
+    backend/
+    admin-panel/
+    database/
+    infrastructure/
+    documentation/
+    scripts/
+    README.md
+    .gitignore
+    docker-compose.yml
+
+MOBILE:
+- screens/
+- components/
+- navigation/
+- services/
+- hooks/
+- store/
+- assets/
+- theme/
+- notifications/
+- calling/
+- messaging/
+
+BACKEND:
+- src/config/
+- src/controllers/
+- src/routes/
+- src/services/
+- src/middleware/
+- src/models/
+- src/socket/
+- src/calling/
+- src/jobs/
+- src/utils/
+- src/validators/
+
+ADMIN:
+- dashboard/
+- users/
+- reports/
+- analytics/
+- settings/
+- authentication/
+- components/
+
+DATABASE:
+- prisma/schema.prisma
+- prisma/migrations/
+- prisma/seed.ts
+- database documentation.
+
+==================================================
+28. TESTING
+==================================================
+
+Create automated tests for:
+
+- Registration.
+- OTP.
+- Login.
+- JWT.
+- User profiles.
+- Private messaging.
+- Message delivery.
+- Read receipts.
+- Offline synchronization.
+- Group chat.
+- File upload.
+- Voice calling.
+- Video calling.
+- Group calls.
+- Notifications.
+- Privacy.
+- Encryption.
+- Admin authorization.
+- MySQL database operations.
+
+Fix all compilation errors, dependency problems, API errors, and runtime issues.
+
+==================================================
+29. DEPLOYMENT
+==================================================
+
+Provide deployment instructions for:
+
+- MySQL database.
+- Node.js backend.
+- Redis.
+- Socket.IO.
+- Coturn.
+- LiveKit.
+- Object storage.
+- Firebase.
+- Admin dashboard.
+- Android application.
+
+Support cPanel/shared hosting where technically compatible.
+
+IMPORTANT:
+If the hosting provider does not support persistent Node.js processes, WebSockets, background workers, or the required native services, clearly identify those limitations and provide a compatible VPS deployment alternative.
+
+Create:
+- .env.example
+- Dockerfile.
+- docker-compose.yml
+- Nginx configuration.
+- MySQL migrations.
+- Production startup scripts.
+- Database backup scripts.
+- HTTPS configuration.
+- Installation documentation.
+
+Never expose credentials in the mobile application or source control.
+
+==================================================
+30. DEVELOPMENT PHASES
+==================================================
+
+Develop the complete application in phases.
+
+PHASE 1:
+Architecture, branding, project structure, MySQL database, Prisma models, migrations, authentication.
+
+PHASE 2:
+User profiles, Android navigation, chat list, private messaging, REST API, Socket.IO.
+
+PHASE 3:
+Media sharing, voice notes, stickers, reactions, message management.
+
+PHASE 4:
+WebRTC one-to-one audio and video calling.
+
+PHASE 5:
+Group chats, group calling, communities, status updates.
+
+PHASE 6:
+Firebase notifications, encryption, privacy, security.
+
+PHASE 7:
+Admin dashboard, analytics, system management.
+
+PHASE 8:
+Testing, performance optimization, deployment, APK/AAB build.
+
+At the end of each phase:
+1. Show implemented features.
+2. List created and modified files.
+3. Run tests.
+4. Fix errors.
+5. List pending configurations.
+6. Continue to the next phase.
+
+Do not recreate the project from scratch between phases.
+
+Preserve all previous implementation work.
+
+==================================================
+31. FINAL ACCEPTANCE CRITERIA
+==================================================
+
+MuzTalk must include:
+
+- Complete Android application.
+- Real authentication.
+- MySQL database.
+- Complete backend.
+- Real-time private chat.
+- Message delivery and read receipts.
+- Image/video/document sharing.
+- Voice messages.
+- Stickers and emojis.
+- Group chats.
+- Communities.
+- Status updates.
+- Real audio calls.
+- Real video calls.
+- Group audio/video calls.
+- Firebase notifications.
+- Privacy settings.
+- End-to-end encryption.
+- Admin dashboard.
+- Database migrations.
+- API documentation.
+- Deployment instructions.
+- Android APK/AAB build support.
+
+FINAL COMMAND:
+
+Start building MuzTalk now.
+
+First inspect the environment and create the project architecture, then implement actual working files.
+
+Do not stop after creating a UI prototype or project proposal.
+
+Do not create fake functionality.
+
+Do not use PostgreSQL or MongoDB.
+
+MYSQL 8 IS MANDATORY.
+
+Connect every application module to the real backend and MySQL database.
+
+Build a professional, secure, maintainable, production-ready application.
+
+OFFICIAL PRODUCT:
+MuzTalk
+
+TAGLINE:
+Connect. Chat. Call.
+
+### 2\. Google AI Studio میں یہ ترتیب ضرور اپنائیں
+
+Master Prompt دینے کے بعد یہ مراحل ایک ایک کرکے مکمل کروائیں:
+
+| مرحلہ | کام                                |
+| ----- | ---------------------------------- |
+| 1     | Complete project structure + MySQL |
+| 2     | Backend + Authentication           |
+| 3     | Real-time WhatsApp-style Chat      |
+| 4     | Audio + Video Calling              |
+| 5     | Groups + Status + Stickers         |
+| 6     | Firebase Notifications             |
+| 7     | Admin Dashboard                    |
+| 8     | Testing + Android APK              |
+
+### 3\. ایک اضافی ضروری Prompt
+
+ہر مرحلے کے بعد AI Studio کو یہ ہدایت دیں:
+
+Continue the existing MuzTalk project. Inspect the current source code and existing MySQL database implementation before making changes. Preserve all existing working features. Implement the next development phase completely. Use MySQL 8 exclusively with Prisma ORM. Connect all features to real backend APIs and Socket.IO. Do not create mock data or fake functionality. Run available tests, fix errors, and provide a clear report of completed and remaining tasks. Never recreate the project from scratch.
+
+میرا اہم مشورہ: MuzTalk کو شروع میں MySQL + Node.js کے ساتھ VPS پر deploy کرنے کی منصوبہ بندی رکھیں۔ عام cPanel hosting پر MySQL چل سکتا ہے، لیکن مسلسل WebSocket connections، WebRTC signaling، TURN اور LiveKit کے لیے عموماً الگ VPS یا managed infrastructure درکار ہوگا۔
+
+اس طرح آپ کا MuzTalk صرف دیکھنے میں WhatsApp جیسا نہیں بلکہ حقیقی messaging اور calling platform بن سکے گا۔
